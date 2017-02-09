@@ -1,0 +1,73 @@
+#vueApp
+  - unless @artists && @artists.empty?
+    header.artist-header.clearfix
+      h1
+        - unless @artists['images'].empty?
+          span
+            img.artist-thumb.img-circle(src='#{@artists['images'][0]['url']}')
+        | #{@artists['name']}
+
+      - unless @artists['genres'].empty?
+        p
+          | Genres:
+          - @artists['genres'].each do |genre|
+            span.spacer
+              | #{genre}
+
+      .col-md-3
+        a.btn.btn-success(href='/top-tracks/#{@artists['id']}') View all Tracks
+    form#albumFilter
+      .form-group
+        label.control-label(for="inputDefault") Filter Album
+        input.form-control#inputDefault(type='text' name='albumFilter')
+    .artist-albums
+      .row.flexy
+        - @albums['items'].each do |album|
+          .col-md-3.well
+            .album
+              img.album-thumb.img-thumbnail(src='#{album['images'][0]['url']}' alt='')
+              h4 #{album['name']}
+              a.btn.btn-default.btn-block(href='#{album['id']}') Album Details
+  - else
+    header.clearfix
+      h3
+        | Request Error: #{@error}.html_safe
+
+script
+    |var data =  #{@albumsStr.html_safe}
+
+javascript:
+    var markupFn = function (i) {
+        return `<div class="col-md-3 well">
+                  <div class="album">
+                    <img class="album-thumb img-thumbnail" src="${i.images[0].url}" alt="">
+                    <h4>${i.name}</h4>
+                    <a href="/album/${i.id}" class="btn btn-default btn-block">Album Details</a>
+                  </div>
+                </div>`;
+    }
+    var inputModel = document.getElementById('inputDefault');
+    var markupModel = '';
+
+    inputModel.addEventListener('keyup', function (e) {
+        var value = e.target.value.trim();
+        //clear items
+        markupModel = '';
+
+        //filtering
+        if (value !== '') {
+            data.items.forEach(function (item) {
+                if (item.name.indexOf(value) > -1) {
+                    markupModel += markupFn(item);
+                }
+            });
+        } else {
+            data.items.forEach(function (item) {
+                markupModel += markupFn(item);
+            })
+        }
+
+
+        //append items
+        document.querySelector('.flexy').innerHTML = markupModel;
+    });

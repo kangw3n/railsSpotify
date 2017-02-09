@@ -1,0 +1,28 @@
+#single
+  - unless @response && @response.empty?
+    header.album-header
+      .row
+        .col-md-4
+          - unless @images.empty?
+            div
+              img(src="#{@images}" class="album-thumb" alt="")
+        .col-md-8
+          - unless @artists && @artists.empty?
+            h4
+              - @artists.each do | artist |
+                span.spacer
+                  a (href="/artist/#{artist['id']}")
+                    | #{artist['name']}
+          h2 #{@response['name']}
+          h5
+            | Album Name:
+            a (href="/album/#{@response['album']['id']}")
+              |  #{@response['album']['name']}
+          a (href="#{@response['external_urls']['spotify']}" target="_blank" class="btn btn-primary")
+            | View in Spotify
+
+
+  - else
+    header.clearfix
+      h3
+        | Request Error: #{@error}

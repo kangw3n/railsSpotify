@@ -1,0 +1,39 @@
+#track
+  - unless @artist && @artist.empty?
+    header.album-header
+      .row
+        .col-md-4
+          - unless @artist['images'].empty?
+            div
+              img.album-thumb(src='#{@artist['images'][0]['url']}' alt='')
+        .col-md-8
+          h2 #{@artist['name']}
+          h4
+            | Followers:
+            |  #{@artist['followers']['total']}
+          h5
+            | Popularity:
+            |  #{@artist['popularity']}
+          a.btn.btn-primary(href='#{@artist['external_urls']['spotify']}') View Artist in Spotify
+    .album-tracks
+      h2 Album Tracks
+      - @tracks['tracks'].each do |track|
+        div
+          .well
+            .row
+              .col-md-2
+                img.album-thumb(src='#{track['album']['images'][0]['url']}' alt='')
+                span #{track['album']['name']}
+                br
+                a(href='#{track['album']['id']}') View Album
+              .col-md-10
+                h4 #{track['name']}
+                a.btn.btn-primary(href='#{track['preview_url']}' target='_blank') Preview Track
+                div
+                  | #{msMinute(track['duration_ms'])} - Popularity:
+                  |  #{track['popularity']}
+  - else
+    header.clearfix
+      h3
+        | Request Error: #{@error}.html_safe
+

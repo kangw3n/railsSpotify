@@ -1,0 +1,40 @@
+#album
+  - unless @response && @response.empty?
+    header.album-header
+      .row
+        .col-md-4
+          - unless @response['images'].empty?
+            div
+              img(src="#{@response['images'][0]['url']}" class="album-thumb" alt="")
+        .col-md-8
+          - unless @response['artists'] && @response['artists'].empty?
+            h4
+              - @response['artists'].each do |artist|
+                span.spacer
+                  | #{artist['name']}
+          h2 #{@response['name']}
+          h5
+            | Release Date: #{@response['release_date']}
+          a (href="#{@response['external_urls']['spotify']}" target="_blank" class="btn btn-primary")
+            | View in Spotify
+    .album-tracks
+      h2 Album Tracks
+      - @response['tracks']['items'].each do |track|
+        div
+          .well
+            h5
+              | #{track['track_number']} -
+              a(href="/track/#{track['id']}")
+                |  #{track['name']}
+            div
+              | Artist:
+              - track['artists'].each do |artist|
+                span.spacer
+                  a(href="/artist/#{artist['id']}") #{artist['name']}
+            a(href="#{track['preview_url']}" target="_blank")
+              | Preview Track
+  - else
+    header.clearfix
+      h3
+        | Request Error: #{@error}
+
